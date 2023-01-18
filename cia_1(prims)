@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_NODES 1000
+
+int a; 
+int b;
+int graph[MAX_NODES][MAX_NODES]; 
+int dist[MAX_NODES]; 
+int par[MAX_NODES]; 
+int visited[MAX_NODES];
+int min_dis() {
+    int min_dist = INT_MAX;
+    int min_index = -1;
+
+    for (int i = 0; i < a; i++) {
+        if (!visited[i] && dist[i] < min_dist) {
+            min_dist = dist[i];
+            min_index = i;
+        }
+    }
+
+    return min_index;
+}
+void prim(int start) {
+    for (int i = 0; i < a; i++) {
+        dist[i] = INT_MAX;
+        visited[i] = 0;
+    }
+    dist[start] = 0;
+    par[start] = -1;
+
+    for (int i = 0; i < a - 1; i++) {
+        int n = min_dis();
+        visited[n] = 1;
+
+        for (int m = 0; m < a; m++) {
+            if (graph[n][m] && !visited[m] && graph[n][m] < dist[m]) {
+                par[m] = n;
+                dist[m] = graph[n][m];
+            }
+        }
+    }
+}
+
+int main() {
+    printf("Enter the number of nodes and edges: ");
+    scanf("%d %d", &a, &b);
+
+    printf("Enter the edges and their weights: ");
+    for (int i = 0; i < b; i++) {
+        int n, m, w;
+        scanf("%d %d %d", &n, &m, &w);
+        graph[n][m] = w;
+    }
+
+    printf("Enter the starting node: ");
+    int start;
+    scanf("%d", &start);
+
+    prim(start);
+
+    printf("Edge \tWeight\n");
+    for (int i = 1; i < a; i++)
+        printf("%d - %d \t%d\n", par[i], i, dist[i]);
+
+    return 0;
+}
